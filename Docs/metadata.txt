@@ -1,0 +1,31 @@
+Metadata structure
+-------------------
+EXT: 
+Unused bits: 
+Frequency table: (The symbols start from 0 and go upto 255 in ascending order)
+545
+3545
+1231
+1212
+.
+.
+.
+58475
+
+After that encode the compressed binary file value
+
+
+-----------------------------------------------------------------------------------------
+
+If the Byte symbols are sorted then we do not have to store the symbols thereby saving a lot of space
+The bytes which do not appear have freq = 0 and are not used in rebuilding the tree during the decoding phase
+
++----------------------+-----------------------------+
+| Section              | Contents                    |
++----------------------+-----------------------------+
+| 1 byte               | Extension length (e.g. 3)   |
+| N bytes              | Extension string (e.g."bin")|
+| 1 byte               | Padded bits count           |
+| 256 × 8 bytes        | Frequency table (long[256]) |
+| Remaining bytes      | Huffman bitstream (packed)  |
++----------------------+-----------------------------+
