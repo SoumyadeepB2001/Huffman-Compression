@@ -10,6 +10,7 @@ class ExtractionPanel extends JPanel {
     private JLabel lblFileLocation;
     private JLabel lblNewFileLocation;
     private File selectedFile;
+    private JProgressBar progressBar;
     private final HuffmanCodec compApp;
 
     public ExtractionPanel(HuffmanCodec compApp) {
@@ -53,6 +54,12 @@ class ExtractionPanel extends JPanel {
         lblNewFileLocation.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         panel.add(lblNewFileLocation);
 
+        progressBar = new JProgressBar();
+        progressBar.setIndeterminate(true);
+        progressBar.setBounds(50, 170, 300, 15);
+        progressBar.setVisible(false);
+        panel.add(progressBar);
+
         return panel;
     }
 
@@ -79,17 +86,37 @@ class ExtractionPanel extends JPanel {
     }
 
     private void extractFile() {
+    if (selectedFile == null) {
+        JOptionPane.showMessageDialog(this, "Please select a file first.");
+        return;
+    }
+
+    progressBar.setVisible(true);
+    progressBar.repaint(); // Ensure it shows immediately
+    lblNewFileLocation.setText("");
+    lblNewFileLocation.setForeground(Color.BLACK);
+
+    new Thread(() -> {
+        File outputFile = null;
 
         try {
-            File outputFile;
             outputFile = HuffmanDecoder.decode(selectedFile);
-            if (outputFile.exists()) {
-                lblNewFileLocation.setText(outputFile.getName());
-            } else {
-                lblNewFileLocation.setText("Extraction failed!");
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        File finalOutputFile = outputFile;
+        SwingUtilities.invokeLater(() -> {
+            progressBar.setVisible(false);
+
+            if (finalOutputFile != null && finalOutputFile.exists() && finalOutputFile.length() > 0) {
+                lblNewFileLocation.setForeground(Color.BLACK);
+                lblNewFileLocation.setText(finalOutputFile.getName());
+            } else {
+                lblNewFileLocation.setForeground(Color.RED);
+                lblNewFileLocation.setText("Extraction failed!");
+            }
+        });
+    }).start();
     }
 }
