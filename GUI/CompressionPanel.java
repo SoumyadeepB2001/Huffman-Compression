@@ -55,7 +55,7 @@ class CompressionPanel extends JPanel {
         progressBar.setBounds(50, 170, 300, 15);
         progressBar.setVisible(false);
         panel.add(progressBar);
-        
+
         return panel;
     }
 
@@ -71,16 +71,16 @@ class CompressionPanel extends JPanel {
         }
     }
 
-   private void compressFile() {
+    private void compressFile() {
         if (selectedFile == null) {
             JOptionPane.showMessageDialog(this, "Please select a file first.");
             return;
         }
-    
-        progressBar.setVisible(true);    
+
+        progressBar.setVisible(true);
         lblNewFileLocation.setText("");
         lblNewFileLocation.setForeground(Color.BLACK);
-    
+
         new Thread(() -> {
             String inputFile = selectedFile.getName();
             String baseName;
@@ -93,10 +93,10 @@ class CompressionPanel extends JPanel {
                 baseName = inputFile;
                 extension = "";
             }
-    
+
             String outputFile = baseName + ".huff";
             boolean success = HuffmanEncoder.compressFile(selectedFile, outputFile);
-    
+
             SwingUtilities.invokeLater(() -> {
                 progressBar.setVisible(false);
                 if (success) {
@@ -108,5 +108,5 @@ class CompressionPanel extends JPanel {
                 }
             });
         }).start();
-    }      
+    }
 }

@@ -13,11 +13,13 @@ public class BitInputStream {
     }
 
     public int readBit() throws IOException {
-        if (currentByte == -1) return -1;
+        if (currentByte == -1)
+            return -1;
 
         if (numBitsRemaining == 0) {
             currentByte = input.read();
-            if (currentByte == -1) return -1;
+            if (currentByte == -1)
+                return -1;
             numBitsRemaining = 8;
         }
 

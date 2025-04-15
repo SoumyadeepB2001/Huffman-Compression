@@ -13,7 +13,7 @@ public class HuffmanCodec {
         frame.setLocationRelativeTo(null);
 
         // Start with CompressionPanel
-        frame.add(new CompressionPanel(this), BorderLayout.CENTER);       
+        frame.add(new CompressionPanel(this), BorderLayout.CENTER);
         frame.setVisible(true);
     }
 

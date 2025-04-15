@@ -86,37 +86,37 @@ class ExtractionPanel extends JPanel {
     }
 
     private void extractFile() {
-    if (selectedFile == null) {
-        JOptionPane.showMessageDialog(this, "Please select a file first.");
-        return;
-    }
-
-    progressBar.setVisible(true);
-    progressBar.repaint(); // Ensure it shows immediately
-    lblNewFileLocation.setText("");
-    lblNewFileLocation.setForeground(Color.BLACK);
-
-    new Thread(() -> {
-        File outputFile = null;
-
-        try {
-            outputFile = HuffmanDecoder.decode(selectedFile);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (selectedFile == null) {
+            JOptionPane.showMessageDialog(this, "Please select a file first.");
+            return;
         }
 
-        File finalOutputFile = outputFile;
-        SwingUtilities.invokeLater(() -> {
-            progressBar.setVisible(false);
+        progressBar.setVisible(true);
+        progressBar.repaint(); // Ensure it shows immediately
+        lblNewFileLocation.setText("");
+        lblNewFileLocation.setForeground(Color.BLACK);
 
-            if (finalOutputFile != null && finalOutputFile.exists() && finalOutputFile.length() > 0) {
-                lblNewFileLocation.setForeground(Color.BLACK);
-                lblNewFileLocation.setText(finalOutputFile.getName());
-            } else {
-                lblNewFileLocation.setForeground(Color.RED);
-                lblNewFileLocation.setText("Extraction failed!");
+        new Thread(() -> {
+            File outputFile = null;
+
+            try {
+                outputFile = HuffmanDecoder.decode(selectedFile);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
-    }).start();
+
+            File finalOutputFile = outputFile;
+            SwingUtilities.invokeLater(() -> {
+                progressBar.setVisible(false);
+
+                if (finalOutputFile != null && finalOutputFile.exists() && finalOutputFile.length() > 0) {
+                    lblNewFileLocation.setForeground(Color.BLACK);
+                    lblNewFileLocation.setText(finalOutputFile.getName());
+                } else {
+                    lblNewFileLocation.setForeground(Color.RED);
+                    lblNewFileLocation.setText("Extraction failed!");
+                }
+            });
+        }).start();
     }
 }
