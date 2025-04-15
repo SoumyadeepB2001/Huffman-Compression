@@ -7,6 +7,7 @@ class CompressionPanel extends JPanel {
     private JLabel lblFileLocation;
     private JLabel lblNewFileLocation;
     private File selectedFile;
+    private JProgressBar progressBar;
     private final HuffmanCodec compApp;
 
     public CompressionPanel(HuffmanCodec compApp) {
@@ -48,6 +49,12 @@ class CompressionPanel extends JPanel {
         lblNewFileLocation.setBounds(170, 120, 200, 30);
         lblNewFileLocation.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         panel.add(lblNewFileLocation);
+
+        progressBar = new JProgressBar();
+        progressBar.setIndeterminate(true);
+        progressBar.setBounds(50, 170, 300, 15);
+        progressBar.setVisible(false);
+        panel.add(progressBar);
         
         return panel;
     }
@@ -64,31 +71,42 @@ class CompressionPanel extends JPanel {
         }
     }
 
-    private void compressFile() {
-
-        String inputFile = selectedFile.getName();
-        String outputFile = "";
-
-        String baseName;
-        String extension;
-        int dotIndex = inputFile.lastIndexOf('.');
-        if (dotIndex > 0 && dotIndex < inputFile.length() - 1) {
-            baseName = inputFile.substring(0, dotIndex);
-            extension = inputFile.substring(dotIndex + 1);
-        } else {
-            baseName = inputFile;
-            extension = "";
+   private void compressFile() {
+        if (selectedFile == null) {
+            JOptionPane.showMessageDialog(this, "Please select a file first.");
+            return;
         }
-
-        outputFile = baseName + ".huff";
-
-        boolean success = HuffmanEncoder.compressFile(selectedFile, outputFile);
-
-        if (success) {
-            lblNewFileLocation.setText(outputFile);
-        } else {
-            lblNewFileLocation.setForeground(Color.RED);
-            lblNewFileLocation.setText("Compression failed!");
-        }
-    }
+    
+        progressBar.setVisible(true);    
+        lblNewFileLocation.setText("");
+        lblNewFileLocation.setForeground(Color.BLACK);
+    
+        new Thread(() -> {
+            String inputFile = selectedFile.getName();
+            String baseName;
+            String extension;
+            int dotIndex = inputFile.lastIndexOf('.');
+            if (dotIndex > 0 && dotIndex < inputFile.length() - 1) {
+                baseName = inputFile.substring(0, dotIndex);
+                extension = inputFile.substring(dotIndex + 1);
+            } else {
+                baseName = inputFile;
+                extension = "";
+            }
+    
+            String outputFile = baseName + ".huff";
+            boolean success = HuffmanEncoder.compressFile(selectedFile, outputFile);
+    
+            SwingUtilities.invokeLater(() -> {
+                progressBar.setVisible(false);
+                if (success) {
+                    lblNewFileLocation.setForeground(Color.BLACK);
+                    lblNewFileLocation.setText(outputFile);
+                } else {
+                    lblNewFileLocation.setForeground(Color.RED);
+                    lblNewFileLocation.setText("Compression failed!");
+                }
+            });
+        }).start();
+    }      
 }
