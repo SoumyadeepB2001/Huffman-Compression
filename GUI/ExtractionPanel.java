@@ -92,7 +92,6 @@ class ExtractionPanel extends JPanel {
         }
 
         progressBar.setVisible(true);
-        progressBar.repaint(); // Ensure it shows immediately
         lblNewFileLocation.setText("");
         lblNewFileLocation.setForeground(Color.BLACK);
 
